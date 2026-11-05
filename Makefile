@@ -3,9 +3,9 @@
 JOBS ?= 6
 
 help:
-	@echo 'make build     Build the Pocket ELF (Docker/OrbStack; no game data)'
+	@echo 'make build     Build the Pocket ELF (container environment; no game data)'
 	@echo 'make release   Build resource-free ZIP with source and licenses'
-	@echo 'make renderer  Build the host FM converter (C++11)'
+	@echo 'make renderer  Build the host FM converter (C++ compiler)'
 	@echo 'make test GAME_DIR=/path/to/PAL  Desktop check with private DOS data'
 
 build:

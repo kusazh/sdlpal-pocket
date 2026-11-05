@@ -1,10 +1,10 @@
 # PAL / Analogue Pocket
 
-本工程把 SDLPAL 编译为 openfpgaOS 的 RISC-V 应用，读取用户的 DOS 原版资源；不执行 PAL.EXE。0.2.0 提供不含游戏资源及运行时二进制的公开发布包，已移除 FPS 标记及调试快捷键。安装和重新构建详见 [RELEASE.md](RELEASE.md)，运行时独立依赖见 [RUNTIME.md](RUNTIME.md)。
+本工程把 SDLPAL 编译为 openfpgaOS 的 RISC-V 应用，读取用户的 DOS 原版资源；不执行 PAL.EXE。公开发布包不含游戏资源及运行时二进制，程序不显示 FPS 标记或提供调试快捷键。安装和重新构建详见 [RELEASE.md](RELEASE.md)，运行时独立依赖见 [RUNTIME.md](RUNTIME.md)。
 
 ## 上机
 
-将 `../../build/pocket/pal/` 中的 `Assets/`、`Cores/`、`Platforms/` 合并复制到 Pocket SD 卡根目录。启动 openFPGA 中的 SDLPAL / Local.PAL，选择 PAL（只有一个实例时通常自动选择）。元数据要求固件 2.2 或以上，不支持睡眠。
+将 `../../build/pocket/pal/` 中的 `Assets/`、`Cores/`、`Platforms/` 合并复制到 Pocket SD 卡根目录。启动 openFPGA 中的 SDLPAL / Local.PAL，选择 PAL（只有一个实例时通常自动选择）。需要支持 openFPGA 的兼容固件，不支持睡眠。
 
 使用菜单中的游戏存档；本原型没有实现 Pocket Memories/save states。五个游戏存档映射到 APF 10–14 槽，文件名为 `pal-1.sav` 至 `pal-5.sav`。安装包不包含空白存档，更新时不要删除设备上的已有存档。
 
@@ -31,9 +31,9 @@
 bash build.sh
 ```
 
-此命令仅构建 ELF，不读取游戏目录。公开打包请在仓库根目录运行 `make release`。使用 OrbStack/Docker 和 SDK 官方 `tools/docker/Dockerfile.firmware`。脚本把并行 make 放在容器内部，避开 SDK macOS 包装脚本的 `nproc` 问题；资源打包与 SD 目录组装使用宿主 Ruby 2.6+，避免改动 SDK 自有文件。
+此命令仅构建 ELF，不读取游戏目录。公开打包请在仓库根目录运行 `make release`。构建脚本使用容器中的交叉编译环境，资源打包与 SD 目录组装使用宿主 Ruby。
 
-资源由用户显式提供：`make resources GAME_DIR=/absolute/path/to/PAL`。也可先执行 `ruby pack.rb /path/to/PAL pal.pak`，音乐另需 `./tools/render-rix /path/to/PAL/MUS.MKF pal-fm.pcm`（转换器由 `make resources` 构建），再执行 `ruby package.rb`。当前适配与测试针对这套繁体 DOS 数据，不能据此保证 Win95 或其他修改版资源兼容。
+资源由用户显式提供：`make resources GAME_DIR=/absolute/path/to/PAL`。也可先执行 `ruby pack.rb /path/to/PAL pal.pak`，音乐另需 `./tools/render-rix /path/to/PAL/MUS.MKF pal-fm.pcm`（转换器由 `make resources` 构建），再执行 `ruby package.rb`。当前适配与测试针对这套繁体 DOS 数据，不能据此保证 Windows 柔情版或其他修改版资源兼容。
 
 桌面集成检查：
 
@@ -41,7 +41,7 @@ bash build.sh
 bash smoke.sh
 ```
 
-默认使用本机 `/opt/homebrew/opt/sdl2-compat/bin/sdl2-config`；其他环境可通过 `SDL2_CONFIG` 覆盖。`make desktop` 生成 `pal-desktop`，从本目录运行即可使用键盘体验（方向键、Enter/Space 确认、Escape 菜单）。桌面版可播放 FM 音乐；VOC 音效仍使用 Pocket 后端，桌面不播放。
+可通过 `SDL2_CONFIG` 指定本机的 `sdl2-config` 命令。`make desktop` 生成 `pal-desktop`，从本目录运行即可使用键盘体验（方向键、Enter/Space 确认、Escape 菜单）。桌面版可播放 FM 音乐；VOC 音效仍使用 Pocket 后端，桌面不播放。
 
 ## 已实现与边界
 
@@ -56,8 +56,8 @@ bash smoke.sh
 
 ## 来源与修改
 
-- openfpgaSDK: `a408ddc12aed0dfaa4aa22c06af82f829db77126`，SDK-owned 目录保持原样；运行时组装前校验 `runtime/MANIFEST`。
-- SDLPAL: `d4bf69b64d335cd680555af9df90e7ec4f3006a3`，源码保存在 `engine/`，保留上游许可证。
+- openfpgaSDK：SDK-owned 目录保持原样；运行时组装前校验 `runtime/MANIFEST`。
+- SDLPAL：源码保存在 `engine/`，保留上游许可证。
 - 引擎改动仅在 `main.c`（桌面集成测试入口）、`util.c`（虚拟文件路径和错误提示）、`video.c`（索引色输出）、`input.c`（掌机按键），由 `PAL_POCKET` 控制主要适配分支。
 - 本目录提供独立 Makefile、平台配置、文件/声音后端、打包及集成检查工具。未修改上层原始 `PAL/`。
 
@@ -65,4 +65,4 @@ bash smoke.sh
 
 ## 公开发布
 
-在已有 ELF 后运行 `python3 release.py`，或用 `make release` 先构建。输出 `build/releases/sdlpal-pocket-0.2.0.zip`。打包使用显式文件列表，排除游戏资源、渲染音乐、存档、测试样本、图像和运行时二进制，包含对应源码和许可证。安装时 `prepare.py` 读取用户合法取得的游戏目录；运行时可以由用户提供，或从固定上游版本下载。不要公开旧的 `build/pocket/pal/` 本地完整包。
+在已有 ELF 后运行 `python3 release.py`，或用 `make release` 先构建，发布 ZIP 输出到 `build/releases/`。打包使用显式文件列表，排除游戏资源、渲染音乐、存档、测试样本、图像和运行时二进制，包含对应源码和许可证。安装时 `prepare.py` 读取用户合法取得的游戏目录；运行时可以由用户提供，或从固定上游版本下载。不要公开旧的 `build/pocket/pal/` 本地完整包。

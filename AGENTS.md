@@ -13,11 +13,11 @@ PAL port work, rather than the earlier ../pocket-pal SDK prototype.
 
 ## Build and checks
 
-- `make build`: RISC-V ELF, Docker/OrbStack, no game data required.
+- `make build`: RISC-V ELF, containerized build, no game data required.
 - `make release`: resource-free ZIP with corresponding source and licenses.
 - `make test GAME_DIR=/absolute/path/to/PAL`: desktop integration check using
   private DOS data. Requires host SDL2; see src/pal/README.md.
-- `make renderer`: offline FM conversion tool, host C++11 only.
+- `make renderer`: offline FM conversion tool, host C++ compiler only.
 - Release layout and user setup: src/pal/RELEASE.md.
 
 Never commit/distribute game MKF/MSG/DAT files, WOR16 fonts, pal.pak,
