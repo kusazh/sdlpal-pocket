@@ -538,6 +538,14 @@ main(
    //
    PAL_Init();
 #if defined(PAL_POCKET) && defined(OF_PC)
+   if (argc == 2 && strcmp(argv[1], "--avi-realtime-test") == 0) {
+       extern int PAL_PocketAVIRealtime(void);
+       return PAL_PocketAVIRealtime();
+   }
+   if (argc == 2 && strcmp(argv[1], "--avi-smoke-test") == 0) {
+       extern int PAL_PocketAVISmoke(void);
+       return PAL_PocketAVISmoke();
+   }
    if (argc == 2 && strcmp(argv[1], "--smoke-test") == 0) {
        extern int PAL_PocketSmokeTest(void);
        return PAL_PocketSmokeTest();

@@ -1,24 +1,22 @@
 # SDLPAL for Analogue Pocket
 
-基于 [SDLPAL](https://github.com/sdlpal/sdlpal) 和 [openfpgaOS SDK](https://github.com/openfpgaOS/openfpgaSDK) 的非官方仙剑奇侠传 DOS 版移植。程序运行在 Pocket 的 openFPGA / openfpgaOS 上，不执行 PAL.EXE。
+基于 [SDLPAL](https://github.com/sdlpal/sdlpal) 和 [openfpgaOS SDK](https://github.com/openfpgaOS/openfpgaSDK) 的非官方仙剑奇侠传 DOS / PAL98 移植。程序运行在 Pocket 的 openFPGA / openfpgaOS 上，不执行 PAL.EXE。
 
-**本仓库及公开发布包不包含游戏资源、游戏音乐、原版字体文件或存档。用户必须自行提供合法取得的繁体 DOS 版资源。** 不支持 Windows 柔情版。
+**本仓库及公开发布包不包含游戏资源。请自行准备合法取得的繁体 DOS 版或 Windows 版（PAL98）游戏目录。**
 
 ## 安装
 
-从 [GitHub Releases](https://github.com/kusazh/sdlpal-pocket/releases) 下载发布 ZIP，完整解压。在解压目录运行：
+从 [GitHub Releases](https://github.com/kusazh/sdlpal-pocket/releases) 下载 ZIP 并完整解压，在解压目录运行：
 
 ```sh
-python3 prepare.py --game /path/to/your/PAL --output ./ready --fetch-runtime
+python3 prepare.py "/path/to/仙剑游戏目录"
 ```
 
-若尚无 Release，可先按下面的源码构建方法执行 `make release`，再进入生成的发布目录运行同一条命令。
+工具自动识别 DOS / Windows 版，准备资源、音乐和运行时；AVI 可用时自动处理。完成后，将 `ready/` 中的 `Assets/`、`Cores/`、`Platforms/` 合并复制到 SD 卡根目录，即可在 Pocket 的 openFPGA 中启动 SDLPAL。
 
-工具在本机打包游戏数据并转换 DOS FM 音乐，随后从固定的 openfpgaOS 上游版本获取三个运行时文件并校验。将 `ready/` 中的 `Assets/`、`Cores/`、`Platforms/` 合并复制到 SD 卡根目录。
+电脑需要 Python；macOS 已附带音乐转换器，Linux 另需 C++ 编译器。AVI 自动转换需要 FFmpeg。详细说明见 [安装说明](src/pal/RELEASE.md)。若尚无 Release，可先执行 `make release`，进入生成的发布目录运行上述命令。
 
-准备工具需要 Python。macOS 包含 arm64/x86_64 通用转换器；Linux 需要 C++ 编译器。Pocket 需要支持 openFPGA 的兼容固件。完整资源清单、离线安装和操作方法见 [安装说明](src/pal/RELEASE.md)，运行时独立授权与来源见 [RUNTIME.md](src/pal/RUNTIME.md)。
-
-原生 320×200 输出，已移除 FPS 标记和调试快捷键。方向键移动、A 确认、B/X/Start 菜单、Y 状态、L/R 翻页、Select 自动战斗。使用游戏内存档，不支持睡眠或 Pocket Memories。
+原生 320×200 无软件缩放，居中于 320×240 画布、上下各留 20 行黑边，已移除 FPS 标记和调试快捷键。方向键移动、A 确认、B/X/Start 菜单、Y 状态、L/R 翻页、Select 自动战斗。使用游戏内存档，DOS 与 PAL98 分别保存为 `pal-N.sav` 和 `pal98-N.sav`，互不覆盖；不支持睡眠或 Pocket Memories。
 
 ## 从源码构建
 
@@ -61,4 +59,4 @@ SDK-FILES.txt    公开源码包所需的 SDK 文件清单
 
 仙剑奇侠传、Analogue Pocket 等名称的权利属于各自权利人。本项目不代表大宇、Analogue、SDLPAL 或 openfpgaOS 官方。程序按许可证提供，不作担保。
 
-已通过独立源码构建、资源转换一致性和桌面检查；公开发布包的安装流程仍待 Pocket 真机验收。
+已通过源码构建、资源转换一致性、桌面检查和 Pocket 实机测试。

@@ -4,31 +4,34 @@
 
 ## 安装
 
-需要支持 openFPGA 的兼容 Pocket 固件、Python，以及你自己合法取得的**繁体 DOS 版**仙剑资源。Windows 柔情版不适用本包。目前资源准备流程在 macOS 验证；Linux 可从源码编译转换器，需要 C++ 编译器。Windows 原生流程尚未验证。
+准备好自己合法取得的繁体 **DOS 版或 Windows 版（PAL98）游戏目录**，不用挑选、改名或混合其中的文件。
 
-1. 解压发布包，在电脑上保留整个目录（包含 `source/`）。
-2. 将自己游戏的资源文件放在一个目录，例如 `~/Games/PAL`。文件名大小写均可，不需要 PAL.EXE 或 RPG 存档。所需文件：
-
-   ```text
-   ABC.MKF BALL.MKF DATA.MKF F.MKF FBP.MKF FIRE.MKF GOP.MKF
-   MAP.MKF MGO.MKF MIDI.MKF MUS.MKF PAT.MKF RGM.MKF RNG.MKF
-   SSS.MKF VOC.MKF M.MSG WORD.DAT WOR16.ASC WOR16.FON
-   ```
-
-3. 在发布包目录运行（路径自行替换）：
+1. 下载并完整解压发布 ZIP。
+2. 在解压目录运行一条命令，把路径换成自己的游戏目录：
 
    ```sh
-   python3 prepare.py --game "$HOME/Games/PAL" --output ./ready --fetch-runtime
+   python3 prepare.py "/path/to/仙剑游戏目录"
    ```
 
-   工具只读取你的游戏目录，在本机生成 `pal.pak` 和 DOS FM 音乐 `pal-fm.pcm`，音乐约 686 MiB。macOS 附带 arm64/x86_64 通用转换器，不依赖 SDL、Homebrew 或 Ruby；Linux 使用 `CXX` 指定的编译器，默认 `c++`。转换可能需要几分钟，预留至少 1 GiB 空间。
+3. 等待完成，将生成的 `ready/` 中的 **Assets、Cores、Platforms** 合并复制到 SD 卡根目录。
+4. 在 Pocket 的 openFPGA 中启动 SDLPAL，选择 PAL（DOS）或 PAL98（Windows）。
 
-   `--fetch-runtime` 从 openfpgaOS SDK 的固定版本下载三个运行时文件并按上游 MANIFEST 校验，不下载游戏数据。运行时由其上游独立授权，参见 `RUNTIME.md`。离线安装可将此参数换为 `--runtime /path/to/openfpgaSDK/runtime`；必须与本包固定版本一致。工具要求输出目录尚不存在，不会写入已有存档或修改 SD 卡。
+工具自动识别版本、准备资源与音乐，并下载和校验所需运行时。Windows 版目录内有完整的六段 AVI 且电脑安装了 FFmpeg 时，会自动加入动画；否则使用游戏原有动画。缺少必要资源时，工具会提示缺少的文件。当前支持繁体 DOS 版和带繁体 TXT 文本、RIX 音乐的 PAL98 目录。
 
-4. 将 `ready/` 内的 **Assets、Cores、Platforms** 三个目录合并复制到 SD 卡根目录。不要只复制发布包中尚未准备完成的 `sdcard/`。
-5. 在 Pocket 的 openFPGA 中启动 SDLPAL / Local.PAL，选择 PAL。
+电脑需要 Python；macOS 已附带音乐转换器，Linux 另需 C++ 编译器。准备过程可能需要几分钟，建议预留 2 GiB 空间。Pocket 需要支持 openFPGA 的兼容固件。
 
-生成后的 `ready/` 含你的游戏数据和音乐，只用于自己的安装，请勿作为本项目发布包上传或分享。
+DOS 与 Windows 版可同时安装，工具会分别生成 `PAL.json` 和 `PAL98.json`。更新时保留 SD 卡上的 `Saves/`。生成目录含自己的游戏资源，仅供个人安装，请勿作为公开发布包分享。
+
+<details>
+<summary>可选参数与离线安装</summary>
+
+- `--output 目录`：指定生成位置，默认是 `ready/`；该目录须尚不存在。
+- `--without-avi`：跳过 AVI 转换。
+- `--runtime /path/to/runtime`：使用固定版本的本地 SDK 运行时，供离线安装使用。版本与授权见 `RUNTIME.md`。
+
+旧版 `--game`、`--fetch-runtime`、`--with-avi` 参数仍兼容。
+
+</details>
 
 ## 操作
 
@@ -41,9 +44,9 @@
 | L / R | 上一页、下一页 |
 | Select | 自动战斗 |
 
-原生 320×200 输出，已移除 FPS 标记和 F3 / L+R 调试快捷键。Pocket 缩放器处理 4:3 显示比例。使用游戏内存档，不支持 Pocket Memories、睡眠或即时存档。
+原生 320×200 无软件缩放，居中于 320×240 画布、上下各留 20 行黑边，已移除 FPS 标记和 F3 / L+R 调试快捷键。使用游戏内存档，不支持 Pocket Memories、睡眠或即时存档。
 
-存档位于 `Saves/pal/common/pal-1.sav` 至 `pal-5.sav`。本包不含存档，安装或更新时保留已有 `Saves/`。沿用 `Local.PAL` 标识，以便继续读取原型版存档。
+存档位于 `Saves/pal/common/pal-1.sav` 至 `pal-5.sav`；PAL98 使用同目录下的 `pal98-1.sav` 至 `pal98-5.sav`，两者不兼容且互不覆盖。本包不含存档，安装或更新时保留已有 `Saves/`。沿用 `Local.PAL` 标识，以便继续读取原型版存档。
 
 ## 源码与重新构建
 
@@ -59,4 +62,4 @@ bash ../../tools/sdk-container.sh make -j6 all
 
 ## 验证与边界
 
-已验证 RISC-V 编译、桌面初始化/场景加载/存档往返、320×200 全画面逐像素输出和 FM 流播放；准备工具输出应与本地原型资源逐字节一致。公开发布包的安装流程仍需 Pocket 真机验收。当前不保证简体、修改版、Windows 版资源兼容，不支持其原版 EXE 补丁。不提供游戏资源下载地址。
+已验证 RISC-V 编译、桌面初始化/场景加载/存档往返、原生 320×200 居中输出及上下对称黑边和 FM 流播放；DOS 准备工具输出与原 Ruby 打包器逐字节一致。PAL98 已验证 YJ_2 场景和标题解压、繁体文本、363 个非空 WAV 音效的解码及 PCM 校验、音效播放/静音/缓存上限和独立存档往返。AVI 已验证六片全部 6,385 帧与 PCM 的一致性、居中黑边、音频计时与跳帧、跳过、播放后状态恢复及异常资源回退；桌面实时播放也已通过。已完成 Pocket 实机测试。当前不保证简体、修改版或其他 Windows 资源布局兼容，不支持其原版 EXE 补丁。不提供游戏资源下载地址。

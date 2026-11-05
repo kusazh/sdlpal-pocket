@@ -15,6 +15,7 @@
  * This prototype keeps compressed assets resident until process exit. */
 static uint8_t *archive;
 static uint32_t count;
+static int windows_data;
 static uint32_t le32(const uint8_t *p) {
     return p[0] | (uint32_t)p[1] << 8 | (uint32_t)p[2] << 16 | (uint32_t)p[3] << 24;
 }
@@ -46,6 +47,8 @@ static int load_archive(void) {
         }
     }
     archive = data; count = n;
+    for (uint32_t i = 0; i < count; i++)
+        if (!strcasecmp((const char *)archive + 12 + i * 32, "pal98.txt")) windows_data = 1;
     printf("PAL: loaded %u resources (%ld bytes)\n", count, size);
     return 0;
 }
@@ -54,8 +57,9 @@ FILE *PAL_fopen(const char *path, const char *mode) {
     name = name ? name + 1 : path;
     /* User slots 1-5 use APF slots 10-14, never the original 0.RPG. */
     if (strlen(name) == 5 && name[0] >= '1' && name[0] <= '5' && !strcasecmp(name + 1, ".rpg")) {
+        if (load_archive()) return NULL;
         char save[24];
-        snprintf(save, sizeof save, "pal-%c.sav", name[0]);
+        snprintf(save, sizeof save, "%s-%c.sav", windows_data ? "pal98" : "pal", name[0]);
 #ifndef OF_PC
         of_file_slot_register(10 + name[0] - '1', save);
 #endif
@@ -63,6 +67,12 @@ FILE *PAL_fopen(const char *path, const char *mode) {
     }
     if (strcmp(mode, "r") && strcmp(mode, "rb")) { errno = EROFS; return NULL; }
     if (load_archive()) return NULL;
+    if (windows_data && !strcasecmp(name, "sounds.mkf")) {
+#ifndef OF_PC
+        of_file_slot_register(6, "pal-sfx.mkf");
+#endif
+        return fopen("pal-sfx.mkf", "rb");
+    }
     for (uint32_t i = 0; i < count; i++) {
         uint8_t *e = archive + 12 + i * 32;
         if (!strcasecmp(name, (const char *)e))

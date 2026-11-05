@@ -12,27 +12,14 @@ app_pc
 !/src/sdk/musl/lib/*.o
 !/src/sdk/musl/lib/*.a
 
-# Private game data and derived files (libmad/*.dat are source lookup tables).
-*.pak
-*.pak.*
-*.pcm
-*.pcm.*
-*.mkf
-*.MKF
-*.rpg
-*.RPG
-*.sav
-*.SAV
-*.msg
-*.MSG
-[Ww][Oo][Rr][Dd].[Dd][Aa][Tt]
-[Ww][Oo][Rr]16.[Aa][Ss][Cc]
-[Ww][Oo][Rr]16.[Ff][Oo][Nn]
-*.ofsf
-*.rbf_r
-*.bin
-*.bmp
-/src/pal/*.png
+# Local game directories (case insensitive).
+/[Pp][Aa][Ll]/
+/[Pp][Aa][Ll]98/
+
+# Generated port files and separately obtained SDK runtime.
+/runtime/pocket/
+/src/pal/pal.pak
+/src/pal/pal-fm.pcm
 /src/pal/pal.pak.json
 /src/pal/pal-desktop
 /src/pal/tools/render-rix

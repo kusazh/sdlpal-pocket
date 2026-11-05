@@ -34,7 +34,7 @@ abort 'Build the ELF first' unless File.file?(File.join(root, '.obj/pal/app.elf'
 abort 'Run make resources first' unless public_package || %w[pal.pak pal-fm.pcm].all? { |n| File.file?(File.join(__dir__, n)) }
 [core, assets, instances, platforms].each { |d| FileUtils.mkdir_p(d) }
 values = {'PLATFORM'=>platform, 'SHORT'=>'PAL', 'NAME'=>'SDLPAL', 'AUTHOR'=>'Local',
-          'VERSION'=>'0.2.0', 'DATE'=>'2026-11-05', 'YEAR'=>'1995', 'BITSTREAM'=>'os25'}
+          'VERSION'=>'0.4.0', 'DATE'=>'2026-11-05', 'YEAR'=>'1995', 'BITSTREAM'=>'os25'}
 %w[core audio video variants interact data input].each do |name|
   text = File.read(File.join(template, name + '.json'))
   values.each { |key, value| text = text.gsub('{{' + key + '}}', value) }
@@ -43,9 +43,15 @@ values = {'PLATFORM'=>platform, 'SHORT'=>'PAL', 'NAME'=>'SDLPAL', 'AUTHOR'=>'Loc
     slot = doc.fetch('data').fetch('data_slots').find { |s| s['id'] == 5 }
     slot['name'] = 'DOS FM Music'
     slot['extensions'] = ['pcm']
+    slot = doc.fetch('data').fetch('data_slots').find { |s| s['id'] == 6 }
+    slot['name'] = 'PAL98 Sound Effects'
+    slot['extensions'] = ['mkf']
+    slot = doc.fetch('data').fetch('data_slots').find { |s| s['id'] == 7 }
+    slot['name'] = 'PAL98 Movies'
+    slot['extensions'] = ['pav']
   end
   if name == 'video'
-    doc.fetch('video').fetch('scaler_modes').sort_by! { |m| m['width'] == 320 && m['height'] == 200 ? 0 : 1 }
+    doc.fetch('video')['scaler_modes'] = doc.fetch('video').fetch('scaler_modes').select { |m| m['width'] == 320 && m['height'] == 240 }
   end
   if name == 'input'
     labels = {'pad_btn_a'=>'Confirm / Talk', 'pad_btn_b'=>'Cancel / Menu',

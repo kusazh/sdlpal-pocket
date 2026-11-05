@@ -197,13 +197,21 @@ VIDEO_Startup(
    //
    // Before we can render anything, we need a window and a renderer.
    //
+   /* The Pocket core scans out a 320x240 raster. Do not let an older packed
+    * WindowHeight=200 config select a top-aligned partial raster. */
+#ifdef PAL_POCKET
+   const int window_width = 320, window_height = 240;
+#else
+   const int window_width = gConfig.dwScreenWidth;
+   const int window_height = gConfig.dwScreenHeight;
+#endif
    if (gpWindow == NULL)
 #if SDL_VERSION_ATLEAST(3,0,0)
-       gpWindow = SDL_CreateWindow("Pal", gConfig.dwScreenWidth, gConfig.dwScreenHeight, PAL_VIDEO_INIT_FLAGS);
+       gpWindow = SDL_CreateWindow("Pal", window_width, window_height, PAL_VIDEO_INIT_FLAGS);
    //TODO: Figure Whether Borderless Support Needed?
 #else
        gpWindow = SDL_CreateWindow("Pal", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                               gConfig.dwScreenWidth, gConfig.dwScreenHeight, PAL_VIDEO_INIT_FLAGS);
+                               window_width, window_height, PAL_VIDEO_INIT_FLAGS);
 #endif
 
    if (gpWindow == NULL)

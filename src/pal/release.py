@@ -12,8 +12,8 @@ import zipfile
 
 PORT = Path(__file__).resolve().parent
 ROOT = PORT.parents[1]
-VERSION = '0.2.0'
-PORT_FILES = '''Makefile README.md RELEASE.md RUNTIME.md NOTICE build.sh pack.rb package.rb prepare.py release.py pal_config.h platform_io.c platform_io.h platform_audio.c platform_avi.c platform_smoke.c platform_video.c platform_video.h sdlpal.cfg smoke.sh tools/render_rix.cpp tools/rix_compat.h licenses/SDK-NOTICE.txt licenses/MUSL-COPYRIGHT.txt third_party/musl-1.2.5.tar.gz'''.split()
+VERSION = '0.4.0'
+PORT_FILES = '''Makefile README.md RELEASE.md MOVIES.md RUNTIME.md NOTICE build.sh pack.rb package.rb prepare.py convert_avi.py release.py pal_config.h platform_io.c platform_io.h platform_audio.c platform_avi.c platform_movie.h platform_smoke.c platform_video.c platform_video.h sdlpal.cfg smoke.sh tools/render_rix.cpp tools/rix_compat.h licenses/SDK-NOTICE.txt licenses/MUSL-COPYRIGHT.txt third_party/musl-1.2.5.tar.gz'''.split()
 
 
 def copy(src, dst):
@@ -65,14 +65,17 @@ def main():
 # SPDX-License-Identifier: GPL-3.0-or-later
 from pathlib import Path
 import runpy
-runpy.run_path(str(Path(__file__).resolve().parent / "source/src/pal/prepare.py"), run_name="__main__")
+import sys
+port = Path(__file__).resolve().parent / "source/src/pal"
+sys.path.insert(0, str(port))
+runpy.run_path(str(port / "prepare.py"), run_name="__main__")
 ''')
         if platform.system() == 'Darwin':
             (out / 'tools').mkdir()
             sources = ['tools/render_rix.cpp'] + ['engine/adplug/' + n + '.cpp' for n in ('rix', 'player', 'fprovide', 'binio', 'binfile', 'dosbox_opls')]
             subprocess.run(['c++', '-std=c++11', '-O2', '-arch', 'arm64', '-arch', 'x86_64', '-mmacosx-version-min=11.0', '-Iengine', '-include', 'tools/rix_compat.h', *sources, '-o', str(out / 'tools/render-rix-macos')], cwd=PORT, check=True)
         manifest = {str(p.relative_to(out)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file()}
-        forbidden = {'.pak', '.pcm', '.sav', '.rpg', '.mkf', '.ofsf', '.png', '.bmp', '.rbf_r', '.wav', '.pfx', '.bin'}
+        forbidden = {'.pak', '.pcm', '.pav', '.avi', '.sav', '.rpg', '.mkf', '.ofsf', '.png', '.bmp', '.rbf_r', '.wav', '.pfx', '.bin'}
         for rel in manifest:
             assert Path(rel).suffix.lower() not in forbidden, 'Forbidden release asset: ' + rel
         (out / 'SHA256SUMS').write_text(''.join(f'{digest}  {rel}\n' for rel, digest in manifest.items()))
