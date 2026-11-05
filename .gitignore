@@ -1,0 +1,49 @@
+# Build and local installation output
+/.obj/
+/build/
+/dist/
+/releases/
+/ready/
+*.o
+*.a
+*.elf
+app_pc
+# The SDK needs its vendored musl link libraries to build without bootstrapping.
+!/src/sdk/musl/lib/*.o
+!/src/sdk/musl/lib/*.a
+
+# Private game data and derived files (libmad/*.dat are source lookup tables).
+*.pak
+*.pak.*
+*.pcm
+*.pcm.*
+*.mkf
+*.MKF
+*.rpg
+*.RPG
+*.sav
+*.SAV
+*.msg
+*.MSG
+[Ww][Oo][Rr][Dd].[Dd][Aa][Tt]
+[Ww][Oo][Rr]16.[Aa][Ss][Cc]
+[Ww][Oo][Rr]16.[Ff][Oo][Nn]
+*.ofsf
+*.rbf_r
+*.bin
+*.bmp
+/src/pal/*.png
+/src/pal/pal.pak.json
+/src/pal/pal-desktop
+/src/pal/tools/render-rix
+/src/pal/tools/render-rix.exe
+/src/sdk/platforms/mister/.mkimage
+
+# Local files
+.DS_Store
+._*
+__pycache__/
+*.pyc
+*.log
+.env
+.env.*

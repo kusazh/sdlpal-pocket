@@ -1,0 +1,34 @@
+#ifndef PAL_CONFIG_H
+#define PAL_CONFIG_H
+#include <sys/time.h>
+#ifndef OF_PC
+#include <ctype.h>
+#define SDL_isspace(c) isspace((unsigned char)(c))
+/* SDL's USB HID keypad codes, missing from the SDK's small SDL subset. */
+#define SDLK_KP_1 SDL_SCANCODE_TO_KEYCODE(89)
+#define SDLK_KP_2 SDL_SCANCODE_TO_KEYCODE(90)
+#define SDLK_KP_3 SDL_SCANCODE_TO_KEYCODE(91)
+#define SDLK_KP_4 SDL_SCANCODE_TO_KEYCODE(92)
+#define SDLK_KP_6 SDL_SCANCODE_TO_KEYCODE(94)
+#define SDLK_KP_7 SDL_SCANCODE_TO_KEYCODE(95)
+#define SDLK_KP_8 SDL_SCANCODE_TO_KEYCODE(96)
+#define SDLK_KP_9 SDL_SCANCODE_TO_KEYCODE(97)
+#endif
+#define PAL_PREFIX "./"
+#define PAL_SAVE_PREFIX "./"
+#define PAL_DEFAULT_WINDOW_WIDTH 320
+#define PAL_DEFAULT_WINDOW_HEIGHT 200
+#define PAL_DEFAULT_FULLSCREEN_HEIGHT 200
+#define PAL_VIDEO_INIT_FLAGS SDL_WINDOW_SHOWN
+#define PAL_SDL_INIT_FLAGS (SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)
+#define PAL_HAS_JOYSTICKS 0
+#define PAL_HAS_GLSL 0
+#define PAL_HAS_CONFIG_PAGE 0
+#define PAL_HAS_NATIVEMIDI 0
+#define PAL_HAS_MP3 0
+#define PAL_HAS_OGG 0
+#define PAL_HAS_OPUS 0
+#define PAL_PLATFORM "Analogue Pocket"
+#define PAL_CREDIT "SDLPAL / openfpgaOS"
+#define PAL_PORTYEAR "2026"
+#endif

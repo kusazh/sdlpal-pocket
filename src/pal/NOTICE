@@ -1,0 +1,52 @@
+SDLPAL for Analogue Pocket — unofficial port, version 0.2.0, 2026-11-05
+
+The combined PAL application is distributed under GNU GPL version 3.
+Port-specific files marked GPL-3.0-or-later may also be used under later
+versions. Upstream file headers remain authoritative for each component.
+Port modifications: Pocket file slots, indexed video, input, FM streaming,
+resource conversion and distribution scripts. See source/src/pal/README.md.
+
+SDLPAL: Copyright (c) 2009-2011 Wei Mingzhi;
+Copyright (c) 2011-2026 SDLPAL development team and contributors.
+https://github.com/sdlpal/sdlpal
+Upstream revision: d4bf69b64d335cd680555af9df90e7ec4f3006a3
+License: GPL-3.0 (some files GPL-3.0-or-later).
+
+openfpgaOS SDK: Copyright (c) 2026 ThinkElastic <Think@Elastic.com>.
+https://github.com/openfpgaOS/openfpgaSDK
+Revision: a408ddc12aed0dfaa4aa22c06af82f829db77126
+License: Apache-2.0, with third-party exceptions in source/src/pal/licenses/SDK-NOTICE.txt.
+Its runtime binaries and sample media are NOT included in this release.
+
+musl libc: Copyright © 2005-2020 Rich Felker, et al.; MIT license.
+The SDK's unmodified musl headers/link libraries are included for rebuilding;
+musl is the application's standard system C library. Original musl 1.2.5
+source is included in source/src/pal/third_party/musl-1.2.5.tar.gz.
+Source: https://musl.libc.org/releases/musl-1.2.5.tar.gz
+SHA256: a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
+Full copyright/permissions: LICENSES/MUSL-COPYRIGHT.txt.
+
+Offline FM renderer:
+AdPlug/libbinio: Simon Peter and contributors, LGPL-2.1-or-later.
+RIX player: palxex and BSPAL, LGPL-2.1-or-later.
+DOSBox integer OPL: Copyright (c) 2002-2017 The DOSBox Team,
+GPL-2.0-or-later; SDLPAL wrappers GPL-3.0-or-later.
+DOSBox floating OPL (also present in converter source/binary):
+LGPL-2.1-or-later; originally based on Ken Silverman's ADLIBEMU.
+See original headers and source/src/pal/engine/adplug/NOTES/COPYING.
+
+Built-in engine font tables have upstream provenance notices (GNU Unifont,
+YH/Red Flag Linux, GNU intlfonts/taipei16 and chdrvfont). Those original
+notices are reproduced in LICENSES/FONT-NOTICES.txt. The original DOS game
+font files WOR16.ASC and WOR16.FON are NOT included.
+
+Additional vendored source retains its original copyright and licensing
+headers, including BSD-licensed Opus, GPL-licensed libmad, and TiMidity.
+These unused decoder trees are supplied as source, not linked into this port.
+
+No PAL game data, artwork, soundtrack, game fonts, saves, test fixtures,
+Roland sample banks or FPGA/OS runtime binaries are included.
+PAL / 仙剑奇侠传 and Analogue Pocket names belong to their respective owners.
+No endorsement by Softstar, Analogue, SDLPAL or openfpgaOS is implied.
+
+This program is provided WITHOUT ANY WARRANTY. See the license texts.
